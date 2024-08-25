@@ -305,3 +305,61 @@ This independence is key for scailing, as services can be distributed across mul
 ### RESTful Services and Data Consistency 
 
 - ACID vs BASE
+
+### Error Handling in RESTful Microservices
+
+- Types of errors
+    1. Client Side Error: in this scenario the caller did something wrong. It is iniciated by 400 status code and it accours when the request sent by the client is incomplete or incorrect.
+
+    2. Server Side Error: where the server did something wrong. Represented by STATUS CODE 500.
+
+    3. Network Issues
+
+- Implementing error responses
+![Error Handling in RESTful API](image-4.png)
+
+
+
+- Error handling patterns (3 of them)
+     1. Timeout handling ➡️ limits the time spent waiting for a response, preventing system hang ups due to unresponsive services.
+     ![Timeout handling using axios](image-5.png)
+
+     2. Retries with exponential backoff ➡️ automatically reattempts failed operations with increasing delays.
+     ![Exponential backoff scenario](image-6.png)
+
+     3. Circuit breaker pattern ➡️ prevents repeated calls to a failing service, in does it in purpose to allow the system time to recover and maintain system stability.
+
+
+- Error logging and monitoring
+
+
+## Lection 3 - Webhooks (the spy 😆) in Node.js Microservices: Real-time Event Handling
+
+### Introduction to Webhooks
+
+🛑 The differences between a traditional API call (RESTapi) and Webhooks:
+
+- In REST the connection is kept open until the response is fully formed. On the other side Webhooks allow an immediate response to acknowledge that a request has been made. After the work will be done by the reciever, a spereate call will be handled to inform the caller and it does not have the request-response cycle. This allows a smooth experience for the users.
+
+- Webhooks are Event-driven (Push Mechanism) ➡️  Webhooks are triggered automatically by an event. When a specific event occurs (e.g., a new order is placed, a payment is processed), the service where the event happened sends an HTTP request to a predefined URL (the webhook endpoint) on another service.
+REST API are Request-driven (Pull Mechanism) ➡️ REST APIs require the client to initiate communication. The client sends an HTTP request to the server to ask for data or perform an action (e.g., get user details, update a record).
+
+- Webhooks are unidirectional which means they have a one-way communication from the sending service to the receiving serive. On the other side REST API are bidirectional, the client can send a request to the server, aand the server sends back responses.
+
+- Webhooks are used for real-time notifications. For example, a payment gateway might use a webhook to notify your system when a payment has been successfully processed.
+REST API are used to access and manipulate resources. For example, you might use a REST API to get information about a user, update a record, or delete an item from a database.
+
+### Webhooks in Microservices Architecture
+ 
+- In an Microservices environment webhooks play a cruicial role, they can act as amessengers that instantly relay events between services. Remember we are talking about events only. For example when a customer places an order, a webhook can immediately inform the inventory service to update stock levels. Remember the order placement might be done using REST API but when that request is made in some kind of server the event using webhook is triggered to inform some other service.
+
+- Real-time data flow ➡️ webhooks provide a direct line of communication, when an event accurs in one service, a webhook ensures that the information is immediately pushed to other relevant services without the need for periodic polling. This makes it to have real-time data flow.
+
+- Event-driven communication ➡️ webhooks automatically trigger a response to events as they happen. This is a key concept of microservices because actions ar etrigegred by events, rather than being scheduled or manually initiated. For example a payment gateway might use a webhook to notify your accounting service as soon as the transaction is processed.
+
+- Scalability
+
+- Resilient
+
+- Reduce load ➡️ by getting rid of unecessary polling. So by using webhooks we dont have to use polling by the other service so they could get what they want in case of an event but just notify the other service when something happens.
+
