@@ -351,7 +351,7 @@ REST API are used to access and manipulate resources. For example, you might use
 
 ### Webhooks in Microservices Architecture
  
-- In an Microservices environment webhooks play a cruicial role, they can act as amessengers that instantly relay events between services. Remember we are talking about events only. For example when a customer places an order, a webhook can immediately inform the inventory service to update stock levels. Remember the order placement might be done using REST API but when that request is made in some kind of server the event using webhook is triggered to inform some other service.
+- In an Microservices environment webhooks play a cruicial role, they can act as messengers that instantly relay events between services. Remember we are talking about events only. For example when a customer places an order, a webhook can immediately inform the inventory service to update stock levels. Remember the order placement might be done using REST API but when that request is made in some kind of server the event using webhook is triggered to inform some other service.
 
 - Real-time data flow ➡️ webhooks provide a direct line of communication, when an event accurs in one service, a webhook ensures that the information is immediately pushed to other relevant services without the need for periodic polling. This makes it to have real-time data flow.
 
@@ -362,4 +362,45 @@ REST API are used to access and manipulate resources. For example, you might use
 - Resilient
 
 - Reduce load ➡️ by getting rid of unecessary polling. So by using webhooks we dont have to use polling by the other service so they could get what they want in case of an event but just notify the other service when something happens.
+
+### Securing Webhooks
+
+- Validate payloads ➡️ We always want to validate the payload we receive to ensure it contains the expected data and conforms to the expected format. This helps prevent injection attacks. For this you can use libraries like Zod or ajv.validate. In this scenario it is good to create a middleware to handle the validation logic and call it webhook-validator.js
+
+- Serving our endpoints only over HTTPS.
+
+- Authenticate requests, for example signature verification
+
+
+### Webhook Event Processing
+
+⚠️ Best Practices for Event Processing:
+1. Security
+2. Error Handling
+3. Reliability
+
+### Code Example
+
+- Example of connecting a webhook with a strippe application to handle payments.
+
+
+## Lection 4 - Message Brokers in Event-Driven Architecture
+
+### Understanding Message Brokers
+
+- What is a message broker? 🤓
+🍩 This is a scenario in microservice architecture without a message broker.
+Each service needs to communicate directly with multiple other services. This works well but it creates a complex web of direct connections. If any service fails or becomes overloaded it can directly impact all the services that depend on it.
+This is also called `tight coupling` and it can make the system difficult to manage and scale.
+![Message Broker 1](image-7.png)
+
+🍩 Lets see how this changes when we introduce a message broker. WHith a message broker in place, the services no longer communicate directly with each other. Instead, they send messages to the broker which then routes these messages to the appropriate services.
+This approach allows services to operate independently improving modularity , scalability, reliability and maintainability making it easier to build and manage complex microservices architectures.
+![Message Broker 2](image-8.png)
+
+
+
+
+
+
 
