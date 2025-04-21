@@ -234,6 +234,19 @@ Optimizing caching involves maximizing the efficiency and performance benefits o
 
 
 
+
+
+
+
+
+
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# -----------------------------------------------------------------------------------------------------------------------------------------------------------------#
+
+
+
+
 # ⛔ Node.js Microservices: Communication Patterns ⛔
 
 ## Lection 1 - Intro to Communication Patterns
@@ -389,6 +402,7 @@ REST API are used to access and manipulate resources. For example, you might use
 ### Understanding Message Brokers
 
 - What is a message broker? 🤓
+
 🍩 This is a scenario in microservice architecture without a message broker.
 Each service needs to communicate directly with multiple other services. This works well but it creates a complex web of direct connections. If any service fails or becomes overloaded it can directly impact all the services that depend on it.
 This is also called `tight coupling` and it can make the system difficult to manage and scale.
@@ -399,8 +413,167 @@ This approach allows services to operate independently improving modularity , sc
 ![Message Broker 2](image-8.png)
 
 
+- Types Of Message Brokers:
+
+1. AMQP (eg RabbitMQ): Advanced Message Queing Protocol. They support queues, exchanges, bindings, durability and acknowledgements.
+2. Log-based (eg Kafka): Instead of using queues kafka uses a distributed log store messages. Producers write messages to the log, and consumers read from it. They support topics , partitions, offset management, replication.
+
+⚠️ Log-based brokers are suiable for applications that require high throughput, real-time data processing and the ability to replay messages.
+
+### Principles of Event-driven Architecture
+
+- Asynchronous communication ➡️ events are produced and consumed independently, allowing services to operate without waiting for each other.
+
+- Event sourcing ➡️ it involves storing the state of an application as a sequence of events. Instent of persisting the current state each change is stored as an event.
+
+- CQRS (Command Query Responsibility Segregation) ➡️ it's a pattern that separates read-and-write operations to optimize performance. Commands are responsibe for changing the state, while queries are used to fetch data.
+
+
+### Setting Up RabbitMQ using docker in docker-compose.yml
+
+
+### Publish/Subscribe Model
+
+
+## Lection 5 - RPC and use gRPC in Microservices
+
+### Introduction to RPC
+
+- gRPC is a RPC framework which is strongy-typed.
+
+- It allows a service to invoke a method in another service as if it were a local function.
+
+- RPC is more performant and efficient than REST API or webhooks, this depends on the favor of RPC you're using. But if you decide to use gRPC which uses a binary serialization format, which is much more compact and faster to encode and decode compared to text-based JSON you get to see the benefits.
+
+- It also uses HTTP, which provides multiplexing, header compression and better flow control.
+
+- Comparing to REST, the contracts in RPC are more strongly typed, this reduces runtime errors and improves developer productivity by catching errors at compile time.
+
+- REST can also achieve strong typing and compile-time checks when combined with tools like OpenAPI (formerly Swagger) and code generation tools. However, by default, REST is not as strongly typed as some modern RPC systems like gRPC.
+
+- It supports Bidirectional streaming.
+
+- gRPC is `synchronous` which means its ideal for real time and low latency interactions and it uses HTTP2. ⚠️ The difference between `massage-brokers and gRPC` is that gRPC says that the work should be done right now using strongly typed contracts , strict APIs and streaming capabilities but message brokers say that the work is gonna be done at some point in the future.
+
+- Use Cases for RPC:
+
+1. Financial Sytsems that process transactions, they may require real time co ordination between services, handling user accounts and transaction recors and fraud detection. You want to know the answer of these things straight away.
+
+2. IoT system to collect and process sensor data in real time that need fast and efficient communication between edge devices and central processing units.
+
+3. Online multiplayer games: they require real time synchronization between game servers and client applications.
+
+4. Telecommunication systems.
+
+5. Healthcare systems: for example patient records.
+
+
+### RPC Mechanisms and Protocols
+
+🔘Types of RPC mechanisms: gRPC, XML-RPC, JSON-RPC
+
+
+- RPC flow
+![RPC flow](image-9.png)
+
+Components 📦
+
+- Client function: This is the function in the client's application that initiates the RPC call. It represents the client's logic and sends the request to the server.
+- Client stub: The client stub is a proxy or intermediary that acts on behalf of the client function. It handles the serialization of the request data, packages it into an RPC message, and sends it over the network to the server.
+- RPC runtime: The RPC runtime is the core component responsible for managing the RPC communication. It handles tasks such as network connections, message transmission, and error handling.
+- Server stub: The server stub is similar to the client stub but operates on the server side. It receives the RPC message from the network, deserializes the request data, and passes it to the appropriate server function.
+- Server function: This is the function on the server that processes the incoming request and performs the necessary actions. It may involve database queries, calculations, or other operations.
+
+
+Flow 📃
+
+- Client function call: The client function is invoked, initiating the RPC call.
+- Client stub involvement: The client stub is responsible for packaging the request data into an RPC message and sending it over the network to the server.
+- RPC runtime communication: The RPC runtime handles the network communication, ensuring that the message is transmitted reliably and securely.
+- Server stub reception: The server stub receives the RPC message, deserializes the request data, and passes it to the appropriate server function.
+- Server function processing: The server function processes the request, performs the necessary actions, and generates a response.
+- Server stub response: The server stub packages the response data into an RPC message and sends it back to the client.
+- RPC runtime communication: The RPC runtime handles the network communication, ensuring that the response message is transmitted reliably and securely.
+- Client stub reception: The client stub receives the response message, deserializes the response data, and returns it to the client function.
+- Client function use: The client function can then use the returned response to continue its execution.
+
+In summary, the RPC flow involves the client making a request, the request being transmitted to the server, the server processing the request and generating a response, and the response being transmitted back to the client. The stubs and RPC runtime handle the underlying communication and serialization/deserialization tasks.
 
 
 
 
+# ⛔ Node.js Microservices: Resilience and Fault Tolerance ⛔
+
+## Introduction to Resilience and Fault Tolerance
+
+- `Resilience` is a systems ability to recover from failures while `Fault Tolerance`
+is a systems ability to continue operationg when one or more components fail.
+For example: a `resilient` system may quickly switch to a backup service if the primary service fails.
+⚠️ For this check how to create backup services in Nodejs....!!
+While a `fault tolerant` system might have redundant component in place so that if one component fails, the otehr can continue to function properly.
+
+- Resilience involves the overall behaviour of a system. Fault tolerance on the other hand is more about the systems architecture and how it is designed to handle component failures without interrupting the service so basically it focuses on individual pieces in a system.
+
+
+- Why do Systems Fail?
+1. External causes
+2. Internal causes
+
+- External Causes of System Failures -> these are mostly caused by erd parties where we have little to no control over. But by implementing geographically ddata canters and cloud absed solutions like AWS and Google can help mitigate the impact of localized natural disasters.
+
+- Internal Causes of System Filures -> Bugs or misconfigurations, insuficient resources allocation, inadequate testing, human error.
+
+- Ways to prevent a System from Failing and avoiding Single point of failure:
+1. Implementing disaster recovery plans
+2. Utilizing load balancing, backup service, employing distributed architectures
+
+"Single point of failure" (SPOF) in Node.js, as in any system, refers to a component that, if it fails, will cause the entire system to fail. In the context of Node.js applications, this concept is particularly important due to the single-threaded nature of Node.js.
+
+Here are some key points about single points of failure in Node.js:
+
+1. Process Crashes:
+   Since Node.js typically runs as a single process, if that process crashes due to an unhandled exception, it becomes a single point of failure for the entire application.
+
+2. Database Connections:
+   If your Node.js app relies on a single database instance, and that database goes down, it can bring down your entire application.
+
+3. External Service Dependencies:
+   If your app heavily depends on a single external service (like an API), and that service becomes unavailable, it could potentially crash your application or make it non-functional.
+
+4. Hardware Failures:
+   If your Node.js application runs on a single server, hardware failure of that server becomes a single point of failure.
+
+5. Load Balancer:
+   In a distributed system, if you're using a single load balancer to distribute traffic, and it fails, your entire system could become inaccessible.
+
+To mitigate single points of failure in Node.js applications, you can consider the following strategies:
+
+1. Use Process Managers:
+   Tools like PM2 can automatically restart your Node.js process if it crashes.
+
+2. Implement Clustering:
+   Node.js's built-in cluster module allows you to create child processes, spreading the load across multiple CPU cores.
+
+3. Database Replication:
+   Use database replication and failover mechanisms to ensure database availability.
+
+4. Implement Circuit Breakers:
+   For external service dependencies, use circuit breaker patterns to gracefully handle service unavailability.
+
+5. Use Containers and Orchestration:
+   Technologies like Docker and Kubernetes can help in creating redundant, scalable, and fault-tolerant deployments.
+
+6. Implement Proper Error Handling:
+   Use try-catch blocks and handle promises properly to prevent unhandled exceptions from crashing your application.
+
+7. Load Balancing:
+   Use multiple load balancers to distribute traffic and avoid a single point of failure.
+
+8. Microservices Architecture:
+   Breaking down a monolithic application into microservices can help isolate failures and prevent them from taking down the entire system.
+
+By addressing these potential single points of failure, you can create more resilient and reliable Node.js applications. The goal is to design your system so that no single component's failure can bring down the entire application.
+
+
+## Retries, Timeouts and Circuit Brakers
 
